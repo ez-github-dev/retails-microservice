@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-deployment
+  labels:
+    app: blue-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: blue-green
+      color: blue
+  template:
+    metadata:
+      labels:
+        app: blue-green
+        color: blue
+    spec:
+      serviceAccountName: blue-green
+      containers:
+      - name: echo-container
+        image: hashicorp/http-echo:0.2.3
+        ports:
+        - containerPort: 8080
+        args:
+          - "-text=response from blue-app"
+          - -listen=:8080
